@@ -1,0 +1,22 @@
+global:  
+  image:  
+    # необов’язково, можна не вказувати або змінити на актуальну версію  
+    # tag: v2.11.0  
+  
+server:  
+  # Вимикаємо TLS всередині кластера (зручно для локальної розробки)  
+  extraArgs:  
+    - --insecure  
+  
+  service:  
+    type: ClusterIP  
+  
+  ingress:  
+    enabled: false  
+  
+dex:  
+  enabled: false  
+  
+configs:  
+  params:  
+    server.insecure: "true"  

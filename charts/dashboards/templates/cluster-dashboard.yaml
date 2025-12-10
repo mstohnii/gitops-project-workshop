@@ -1,0 +1,56 @@
+apiVersion: v1  
+kind: ConfigMap  
+metadata:  
+  name: cluster-dashboard  
+  namespace: monitoring  
+  labels:  
+    grafana_dashboard: "1"  
+data:  
+  cluster-dashboard.json: |  
+    {  
+      "id": null,  
+      "uid": "cluster-overview",  
+      "title": "Kubernetes Cluster Overview",  
+      "schemaVersion": 36,  
+      "version": 1,  
+      "refresh": "30s",  
+      "time": {  
+        "from": "now-30m",  
+        "to": "now"  
+      },  
+      "timepicker": {  
+        "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"]  
+      },  
+      "panels": [  
+        {  
+          "type": "timeseries",  
+          "title": "Node CPU usage (%)",  
+          "datasource": {  
+            "type": "prometheus",  
+            "uid": "PROMETHEUS"  
+          },  
+          "targets": [  
+            {  
+              "expr": "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",  
+              "legendFormat": "{{instance}}"  
+            }  
+          ],  
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 }  
+        },  
+        {  
+          "type": "timeseries",  
+          "title": "Node memory usage (ratio)",  
+          "datasource": {  
+            "type": "prometheus",  
+            "uid": "PROMETHEUS"  
+          },  
+          "targets": [  
+            {  
+              "expr": "1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)",  
+              "legendFormat": "{{instance}}"  
+            }  
+          ],  
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 }  
+        }  
+      ]  
+    }  

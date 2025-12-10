@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1  
+kind: Application  
+metadata:  
+  name: monitoring  
+  namespace: argocd  
+spec:  
+  project: default  
+  source:  
+    repoURL: https://victoriametrics.github.io/helm-charts  
+    chart: victoria-metrics-k8s-stack  
+    targetRevision: 0.24.7  
+    helm:  
+      values: |-  
+        fullnameOverride: vm-k8s-stack  
+  
+        # Вмикаємо основні компоненти  
+        vmsingle:  
+          enabled: true  
+        vmagent:  
+          enabled: true  
+        alertmanager:  
+          enabled: false  
+  
+        kube-state-metrics:  
+          enabled: true  
+  
+        prometheus-node-exporter:  
+          enabled: true  
+  
+        grafana:  
+          enabled: true  
+          adminPassword: "admin"  
+          sidecar:  
+            dashboards:  
+              enabled: true  
+              label: grafana_dashboard  
+              folder: /var/lib/grafana/dashboards  
+  
+  destination:  
+    server: https://kubernetes.default.svc  
+    namespace: monitoring  
+  syncPolicy:  
+    automated:  
+      prune: true  
+      selfHeal: true  
+    syncOptions:  
+      - CreateNamespace=true  
