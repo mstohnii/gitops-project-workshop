@@ -6,7 +6,7 @@ metadata:
 spec:  
   project: default  
   source:  
-    repoURL: https://github.com/mstohnii/gitops-project-workshop.git  
+    repoURL: https://github.com/mstohnii/gitops-project-workshop.git
     targetRevision: main  
     path: charts/spam2000  
     helm:  
@@ -19,5 +19,5 @@ spec:
     automated:  
       prune: true  
       selfHeal: true  
-    syncOptions:  
-      - CreateNamespace=true  
+  syncOptions:  
+    - CreateNamespace=true  
