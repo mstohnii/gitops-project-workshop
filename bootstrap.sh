@@ -5,8 +5,8 @@ set -euo pipefail
 # Налаштування  
 # ------------------------------  
 REPO_URL="https://github.com/mstohnii/gitops-project-workshop.git"  
-MINIKUBE_PROFILE="gitops-workshop"  
-K8S_VERSION="v1.30.0"  
+MINIKUBE_PROFILE="minikube"  
+K8S_VERSION="v1.32.2"  
 ARGO_NS="argocd"  
   
 # ------------------------------  
@@ -27,17 +27,12 @@ need_cmd minikube
 # Старт Minikube  
 # ------------------------------  
 echo "[*] Стартуємо Minikube..."  
-minikube start \  
-  --profile="${MINIKUBE_PROFILE}" \  
-  --kubernetes-version="${K8S_VERSION}" \  
-  --cpus=4 \  
-  --memory=4096 \  
-  --driver=docker  
+minikube start --cpus=4 --memory=4096 --driver=docker   
   
 kubectl config use-context "${MINIKUBE_PROFILE}"  
   
 # (опційно) metrics-server  
-minikube addons enable metrics-server --profile "${MINIKUBE_PROFILE}"  
+minikube addons enable metrics-server 
   
 # ------------------------------  
 # Встановлення Argo CD через Helm  
@@ -48,9 +43,7 @@ kubectl get ns "${ARGO_NS}" >/dev/null 2>&1 || kubectl create ns "${ARGO_NS}"
 helm repo add argo https://argoproj.github.io/argo-helm >/dev/null  
 helm repo update >/dev/null  
   
-helm upgrade --install argocd argo/argo-cd \  
-  --namespace "${ARGO_NS}" \  
-  --values gitops/argocd/values.yaml  
+helm upgrade --install argocd argo/argo-cd --namespace "${ARGO_NS}" --values gitops/argocd/values.yaml  
   
 echo "[*] Чекаємо готовність Argo CD..."  
 kubectl -n "${ARGO_NS}" rollout status deploy/argocd-server --timeout=300s  
