@@ -8,17 +8,23 @@ spec:
   source:  
     repoURL: https://victoriametrics.github.io/helm-charts  
     chart: victoria-metrics-k8s-stack  
-    targetRevision: 0.65.1
+    targetRevision: 0.65.1  
     helm:  
-      values: |-  
+      values: |  
         fullnameOverride: vm-k8s-stack  
   
-        # Вмикаємо основні компоненти  
+        # Main components  
         vmsingle:  
           enabled: true  
+  
         vmagent:  
           enabled: true  
+  
+        # No alertmanager or vmalert (alerting disabled)  
         alertmanager:  
+          enabled: false  
+  
+        vmalert:  
           enabled: false  
   
         kube-state-metrics:  
@@ -39,6 +45,7 @@ spec:
   destination:  
     server: https://kubernetes.default.svc  
     namespace: monitoring  
+  
   syncPolicy:  
     automated:  
       prune: true  
